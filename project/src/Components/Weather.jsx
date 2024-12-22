@@ -4,8 +4,11 @@ import './Weather.css'
 
 const Weather = () => {
   return (
-    <div>
-      <h1>Weather App</h1>
+    <div className='weather'>
+      <div className='search-bar'>
+        <input type='text' placeholder='Search'/>
+        <img src='' alt=''/>
+      </div>
     </div>
   )
 }
