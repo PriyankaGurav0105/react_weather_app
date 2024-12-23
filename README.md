@@ -7,3 +7,5 @@ If city name entered incorrectly...
 If city name entered correctly
 
 ![image](https://github.com/user-attachments/assets/766f2c19-c6be-4ce8-8278-c1a91f56f405)
+
+![image](https://github.com/user-attachments/assets/0ae0211c-17f5-4658-8af7-e29a352d416b)
