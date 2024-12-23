@@ -1,61 +1,71 @@
-/* eslint-disable no-empty */
 /* eslint-disable no-unused-vars */
-import React, { useEffect } from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { WiDaySunny, WiCloud, WiRain, WiSnow, WiThunderstorm } from "react-icons/wi";
 import "./Weather.css";
-import search_icon from "../assets/search.png";
-import clear_icon from "../assets/clear.png";
-import cloud_icon from "../assets/cloud.png";
-import drizzle_icon from "../assets/drizzle.png";
-import humidity_icon from "../assets/humidity.png";
-import rain_icon from "../assets/rain.png";
-import snow_icon from "../assets/snow.png";
-import wind_icon from "../assets/wind.png";
 
 const Weather = () => {
+  const [city, setCity] = useState("");
+  const [weatherData, setWeatherData] = useState(null);
+  const [error, setError] = useState("");
 
-    const search =async (city) =>{
-        try {
-            const url = 'https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${import.meta.env.VITE_APP_ID}';
-            const response = await fetch(url);
-            const data = await response.json();
-            console.log(data);
-            
-        } catch (error) {
-            
-        }
+  const API_KEY = "4102275408846167441dd11b17fcdb30"; // Replace with your OpenWeatherMap API key.
+
+  const fetchWeather = async () => {
+    try {
+      setError(""); // Clear any previous error messages.
+      const response = await axios.get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
+      );
+      setWeatherData(response.data);
+    } catch (err) {
+      setError("City not found. Please try again.");
+      setWeatherData(null);
     }
+  };
 
-            useEffect(()=>{
-                search("London");
-            },[])
-
-
-
+  const getWeatherIcon = (weather) => {
+    switch (weather) {
+      case "Clear":
+        return <WiDaySunny size={80} color="#FFD700" />;
+      case "Clouds":
+        return <WiCloud size={80} color="#B0C4DE" />;
+      case "Rain":
+        return <WiRain size={80} color="#4682B4" />;
+      case "Snow":
+        return <WiSnow size={80} color="#ADD8E6" />;
+      case "Thunderstorm":
+        return <WiThunderstorm size={80} color="#800080" />;
+      default:
+        return <WiCloud size={80} color="#B0C4DE" />;
+    }
+  };
 
   return (
-    <div className="weather">
-      <div className="search-bar">
-        <input type="text" placeholder="Search" />
-        <img src={search_icon} alt="" />
-      </div>
-      <img src={clear_icon} alt="" className="weather-icon" />
-      <p className="temperature">16°C</p>
-      <p className="location">London</p>
-      <div className="weather-data">
-        <div className="col">
-          <img src={humidity_icon} alt="" />
-          <div>
-            <p>91 %</p>
-            <span>Humidity</span>
-          </div>
+    <div className="app">
+      <div className="weather-container">
+        <h1>Weather App</h1>
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Enter city"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
+          <button onClick={fetchWeather}>Search</button>
         </div>
-        <div className="col">
-          <img src={wind_icon} alt="" />
-          <div>
-            <p>3.6 Km/h %</p>
-            <span>Wind Speed</span>
+        {error && <p className="error">{error}</p>}
+        {weatherData && (
+          <div className="weather-info">
+            <h2>{weatherData.name}</h2>
+            <div className="weather-icon">
+              {getWeatherIcon(weatherData.weather[0].main)}
+            </div>
+            <p>Temperature: {weatherData.main.temp}°C</p>
+            <p>Humidity: {weatherData.main.humidity}%</p>
+            <p>Condition: {weatherData.weather[0].description}</p>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
